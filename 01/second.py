@@ -1,6 +1,6 @@
 seen = set()
 sums = {}
-for i in range(199):
+for i in range(200):
     n = int(input())
     t = 2020 - n
     if t in sums:
@@ -11,4 +11,3 @@ for i in range(199):
     for o in seen:
         sums[n + o] = n
     seen.add(n)
-print(seen)
