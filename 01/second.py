@@ -1,13 +1,11 @@
-seen = set()
-sums = {}
-for i in range(200):
-    n = int(input())
-    t = 2020 - n
-    if t in sums:
-        a = t - sums[t]
-        b = t - a
-        print(a * b * n)
-        break
-    for o in seen:
-        sums[n + o] = n
-    seen.add(n)
+def solve(LEN):
+    seen = set()
+    for i in range(LEN):
+        n = int(input())
+        for o in seen:
+            target = 2020 - (n + o)
+            if target in seen:
+                return target * o * n
+        seen.add(n)
+
+print(solve(200))
