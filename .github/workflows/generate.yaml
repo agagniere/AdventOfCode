@@ -33,7 +33,7 @@ jobs:
               printf "$i|"
               [[ -d 2020/$i ]] && printf ":heavy_check_mark:"
               printf "\n"
-          done
+          done >> $out
       - name: Commit change
         uses: EndBug/add-and-commit@v5
         with:
