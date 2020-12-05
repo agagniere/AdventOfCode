@@ -9,7 +9,7 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 02|:heavy_check_mark:
 03|:heavy_check_mark:
 04|:heavy_check_mark:
-05|
+05|:heavy_check_mark:
 06|
 07|
 08|
