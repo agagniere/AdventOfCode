@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  Readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Update readme
+        run: |
+          out="README.md"
+          cat <<-'EOF' > $out
+          # Advent of Code
+
+          My solutions for the [Advent of Code](https://adventofcode.com), a challenge started by 110,000+ coders
+
+          ### Progress
+          | Day | [2020](https://adventofcode.com/2020) |
+          | --: | :-----------------------------------: |
+          EOF
+          for i in $(seq -w 25)
+          do
+              printf "$i|"
+              [[ -d 2020/$i ]] && printf ":heavy_check_mark:"
+              printf "\n"
+          done >> $out
+      - name: Commit change
+        uses: EndBug/add-and-commit@v5
+        with:
+          author_name: agagniere
+          author_email: angagnie@student.42.fr
+          message: "(update readme)"
+          add: README.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
