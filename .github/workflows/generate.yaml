@@ -25,13 +25,30 @@ jobs:
           My solutions for the [Advent of Code](https://adventofcode.com), a challenge started by 110,000+ coders
 
           ### Progress
-          | Day | [2020](https://adventofcode.com/2020) |
-          | --: | :-----------------------------------: |
           EOF
+          { printf "|Day" ;
+            for folder in $("ls" -d */)
+            do
+                printf "|[${folder%/}](https://adventofcode.com/${folder%/})"
+            done
+            echo "|"
+          } >> $out
+          { printf "|--:" ;
+            for folder in $("ls" -d */)
+            do
+                printf "| :---: "
+            done
+            echo "|"
+          } >> $out
           for i in $(seq -w 25)
           do
-              printf "$i|"
-              [[ -d 2020/$i ]] && printf ":heavy_check_mark:"
+              printf "$i"
+              for folder in $("ls" -d */)
+              do
+                  printf "|"
+                  compgen -G "$folder$i/first*" >/dev/null && printf ":star:"
+                  compgen -G "$folder$i/second*" > /dev/null && printf ":star:"
+              done
               printf "\n"
           done >> $out
       - name: Commit change
