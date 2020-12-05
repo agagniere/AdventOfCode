@@ -1,24 +1,15 @@
 import re
 
-def check_byr(s):
-    y = int(s)
-    return 1920 <= y and y <= 2002
-def check_iyr(s):
-    y = int(s)
-    return 2010 <= y and y <= 2020
-def check_eyr(s):
-    y = int(s)
-    return 2020 <= y and y <= 2030
-def check_hgt(s):
-    h, u = int(s[:-2]), s[-2:]
-    return u in ['cm', 'in'] and (150 <= h and h <= 193) if  u == 'cm' else (59 <= h and h <= 76)
-
-def check_hcl(s): return re.fullmatch('#[0-9a-f]{6}', s) != None
-def check_ecl(s): return s in ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
-def check_pid(s): return re.fullmatch('\d{9}', s) != None
-def check_cid(s): return True
-
-check = {"byr":check_byr, "iyr":check_iyr, "eyr":check_eyr, "hgt":check_hgt, "hcl":check_hcl, "ecl":check_ecl, "pid":check_pid, "cid":check_cid}
+check = {
+    "byr":(lambda s:int(s) in range(1920, 2003)),
+    "iyr":(lambda s:int(s) in range(2010, 2021)),
+    "eyr":(lambda s:int(s) in range(2020, 2031)),
+    "hgt":(lambda s:int(s[:-2]) in {'cm':range(150,194), 'in':range(59,77)}[s[-2:]]),
+    "hcl":(lambda s:re.fullmatch('#[0-9a-f]{6}', s) != None),
+    "ecl":(lambda s:s in ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']),
+    "pid":(lambda s:re.fullmatch('\d{9}', s) != None),
+    "cid":(lambda s:True)
+}
 
 mandatory = set(check.keys())
 mandatory.remove('cid')
