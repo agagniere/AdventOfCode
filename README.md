@@ -13,8 +13,8 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 06||:star::star:
 07||:star::star:
 08||:star::star:
-09||
-10||
+09||:star:
+10||:star:
 11||
 12||
 13||
