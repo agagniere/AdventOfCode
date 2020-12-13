@@ -14,7 +14,6 @@ while True:
         child = tuple(bag.split()[:3])
         rule[parent] += [child]
 
-
 def sub_bags_in(bag):
     count = 1
     for n, adj, color in rule[bag]:

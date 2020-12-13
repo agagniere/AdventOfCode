@@ -1,6 +1,5 @@
 seen = set()
 count = 0
-#for _ in range(2087):
 while True:
     try:
         line = input()
