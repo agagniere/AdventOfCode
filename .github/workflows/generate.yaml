@@ -22,7 +22,7 @@ jobs:
           cat <<-'EOF' > $out
           # Advent of Code
 
-          My solutions for the [Advent of Code](https://adventofcode.com), a challenge started by 110,000+ coders
+          My solutions for the [Advent of Code](https://adventofcode.com), a challenge started by [130,000+](https://adventofcode.com/2020/stats) coders
 
           ### Progress
           EOF
