@@ -1,8 +1,6 @@
-#adapters = set()
 adapters = []
 while True:
     try:
-        #adapters.add(int(input()))
         adapters += [int(input())]
     except:
         break
