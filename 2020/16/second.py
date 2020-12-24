@@ -37,12 +37,7 @@ if __name__ == '__main__':
         valid_tickets = list(filter(is_ticket_valid(constraints), map(parse_ticket, lines[25:]))) + [mine]
         is_matching_precomputed = [set([i for i in range(len(constraints)) if is_matching(col, valid_tickets, constraints[i])]) for col in range(len(constraints))]
 
-        print(len(valid_tickets))
-
-        count = 0
         def backtrack(mapping):
-            global count
-            count += 1
             col = len(mapping)
             if col == len(constraints):
                 return mapping
@@ -54,9 +49,7 @@ if __name__ == '__main__':
             return None
 
         mapping = backtrack([])
-        print(count)
         inverse = {col:i for i, col in enumerate(mapping)}
-        print(mapping)
         result = 1
         for i in range(6):
             result *= mine[inverse[i]]
