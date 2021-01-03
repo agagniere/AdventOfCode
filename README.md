@@ -23,7 +23,7 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 16|||:star::star:
 17|||:star::star:
 18|||:star::star:
-19|||
+19|||:star::star:
 20|||
 21|||
 22|||
