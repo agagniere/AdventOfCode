@@ -1,6 +1,6 @@
 # Advent of Code
 
-My solutions for the [Advent of Code](https://adventofcode.com), a challenge started by [130,000+](https://adventofcode.com/2020/stats) coders
+My solutions for the [Advent of Code](https://adventofcode.com), a challenge started by [150,000+](https://adventofcode.com/2021/stats) coders
 
 ### Progress
 |Day|[2015](https://adventofcode.com/2015)|[2019](https://adventofcode.com/2019)|[2020](https://adventofcode.com/2020)|[2021](https://adventofcode.com/2021)|
@@ -12,8 +12,8 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 05|:star::star:||:star::star:|:star::star:
 06|||:star::star:|:star::star:
 07|||:star::star:|:star::star:
-08|||:star::star:|
-09|||:star::star:|
+08|||:star::star:|:star::star:
+09|||:star::star:|:star::star:
 10|||:star:|
 11|||:star::star:|
 12|||:star::star:|
