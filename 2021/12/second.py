@@ -15,19 +15,18 @@ for line in lines():
     topo[b] += [a]
 
 
-fringe = deque([('start', defaultdict(int), [], None)])
-paths = []
+fringe = deque([('start', defaultdict(int), None)])
+paths = 0
 while fringe:
-    cur, seen, path, small = fringe.popleft()
+    cur, seen, small = fringe.popleft()
     seen[cur] += 1
     adj = topo[cur]
     for r in adj:
         if r == 'end':
-            paths += [path]
+            paths += 1
         elif seen[r] < 1 or r.isupper():
-            fringe.append((r, seen.copy(), path + [r], small))
+            fringe.append((r, seen.copy(), small))
         elif small == None and seen[r] < 2 and r not in set(['start', 'end']) and r.islower():
-            fringe.append((r, seen.copy(), path + [r], r))
+            fringe.append((r, seen.copy(), r))
 
-#print('\n'.join([' , '.join(p) for p in paths]))
-print(len(paths))
+print(paths)

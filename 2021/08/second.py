@@ -1,5 +1,14 @@
 from collections import defaultdict
 
+def common(a, b):
+    return len(set(a) & set(b))
+
+def sort_strings(strings):
+    result = []
+    for string in strings:
+        result += [''.join(sorted(string))]
+    return result
+
 correct = {
     '0': "abcefg",
     '1': "cf",
@@ -12,14 +21,16 @@ correct = {
     '8': "abcdefg",
     '9': "abcdfg"
 }
-translate = {value: key for key, value in correct.items()}
+
 by_length = defaultdict(list)
 for key, value in correct.items():
     by_length[len(value)] += [key]
-unique = {L:D[0] for L, D in by_length.items() if len(D) == 1}
 
-def common(a, b):
-    return len(set(a) & set(b))
+common_matrix = {d: {o: common(D, O) for o, O in correct.items()} for d, D in correct.items()}
+by_common = {d: defaultdict(set) for d in correct}
+for d, in_common in common_matrix.items():
+    for o, c in in_common.items():
+        by_common[d][c].add(o)
 
 total = 0
 while True:
@@ -27,39 +38,12 @@ while True:
         line = input()
     except:
         break
-    halves = line.split(' | ')
-    ten_digits = halves[0].split()
-    four_output = halves[1].split()
-
-    local_translate = {}
-    local = {}
-    for D in ten_digits:
-        d = ''.join(sorted(D))
-        if len(d) in unique:
-            local_translate[d] = unique[len(d)]
-            local[unique[len(d)]] = d
-    for D in ten_digits:
-        d = ''.join(sorted(D))
-        if d not in local_translate:
-            r = None
-            if len(d) == 5:
-                if common(d, local['1']) == 2:
-                    r = '3'
-                elif common(d, local['4']) == 3:
-                    r = '5'
-                else:
-                    r = '2'
-            if len(d) == 6:
-                if common(d, local['1']) == 1:
-                    r = '6'
-                elif common(d, local['4']) == 3:
-                    r = '0'
-                else:
-                    r = '9'
-            if r:
-                local_translate[d] = r
-                local[r] = d
-    res = ''.join([local_translate.get(''.join(sorted(n)), '?') for n in four_output])
-    print(res)
-    total += int(res)
+    ten_figures, four_output = [sort_strings(half.split()) for half in line.split(' | ')]
+    digit_from_figure = {figure: set(by_length[len(figure)]) for figure in ten_figures}
+    figure_from_digit = {by_length[len(figure)][0]: figure for figure in ten_figures if len(by_length[len(figure)]) == 1}
+    for figure, candidates in filter(lambda kv: len(kv[1]) > 1, digit_from_figure.items()):
+        for digit, other in figure_from_digit.items():
+            candidates &= by_common[digit][common(figure, other)]
+        figure_from_digit[next(iter(candidates))] = figure
+    total += int(''.join([next(iter(digit_from_figure[figure])) for figure in four_output]))
 print(total)
