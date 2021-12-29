@@ -29,4 +29,4 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 22||||:star:
 23||||
 24||||:star::star:
-25||||:star:
+25|||:star:|:star:
