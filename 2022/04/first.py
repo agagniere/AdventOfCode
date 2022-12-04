@@ -1,13 +1,7 @@
-def create_range(text):
-    start, end = map(int, text.split('-'))
-    return range(start, end + 1)
+from utils import *
 
-count = 0
-while True:
-    try:
-        A, B = sorted(map(create_range, input().split(',')), key=len)
-        if A.start in B and A.stop-1 in B:
-            count += 1
-    except:
-        break
-print(count)
+def single(line):
+    A, B = sorted(map(create_range, line.split(',')), key=len)
+    return A.start in B and A.stop - 1 in B
+
+print(sum(map(single, lines)))
