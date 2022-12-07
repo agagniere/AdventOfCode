@@ -1,0 +1,34 @@
+$ cd /
+$ ls
+dir a
+4 b.txt
+6 c.dat
+dir d
+dir M
+$ cd a
+$ ls
+dir e
+6 f
+7 g
+6 h.lst
+$ cd e
+$ ls
+4 i
+$ cd ..
+$ cd ..
+$ cd d
+$ ls
+4 j
+1 d.log
+2 d.ext
+6 k
+$ cd ..
+$ cd M
+$ ls
+9 ooo
+8 kkk
+dir e
+$ cd e
+$ ls
+8798798 toto
+4525252 tata

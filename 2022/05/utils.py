@@ -1,5 +1,4 @@
 import sys
-from itertools import zip_longest
 
 def lines():
     while True:
