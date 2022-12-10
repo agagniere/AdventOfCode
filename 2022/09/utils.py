@@ -89,21 +89,21 @@ def art(length, instructions) -> set:
     y_max = max(map(Point.getY, seen[0]))
     x_min = min(map(Point.getX, seen[0]))
     x_max = max(map(Point.getX, seen[0]))
-    colors = [(255 * i // length, 255 * (length - i) // length, 255 * (length - i // 2) // length) for i in range(length)]
+    colors = [(255 * i // length, 255 * (length - i) // length, 255 * (length - i) // (length)) for i in range(length)]
     print('/* XPM */')
     print('static char * aoc2022d9_xpm[] = {')
     print(f'"{x_max - x_min + 1} {y_max - y_min + 1} {length + 1} 1",')
-    print(f'". c #111111",')
+    print(f'". c #020202",')
     for i, c in enumerate(colors):
         r, g, b = c
-        print(f'"{i} c #{r:02x}{g:02x}{b:02x}",')
+        print(f'"{i:x} c #{r:02x}{g:02x}{b:02x}",')
     for y in range(y_max, y_min - 1, -1):
         line = []
         for x in range(x_min, x_max + 1):
             line.append('.')
             for h in range(length - 1, -1, -1):
                 if (x, y) in seen[h]:
-                    line[-1] = str(h)
+                    line[-1] = f'{h:x}'
                     break
         print('"' + ''.join(line) + '",')
     print('};')
