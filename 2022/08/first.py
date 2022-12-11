@@ -1,6 +1,5 @@
 from utils import *
 
 forest = store_forest()
-#print('\n'.join(map(str,forest)))
-R = visible_from(forest)
-print(len(R))
+visible = visible_trees(forest, False) | visible_trees(forest, True)
+print(len(visible))
