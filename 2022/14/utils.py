@@ -38,12 +38,9 @@ def parse(iterable):
             while A != B:
                 A = min(A.neighbors(), key=B.taxi_distance)
                 rocks.add(A)
-    x_min = min(map(Point.getX, rocks))
-    y_min = min(map(Point.getY, rocks))
-    x_max = max(map(Point.getX, rocks))
     y_max = max(map(Point.getY, rocks))
-    for y in range(y_min, y_max+1):
-        print(''.join([' #'[(x,y) in rocks] for x in range(x_min, x_max+1)]))
+    for y in range(min(map(Point.getY, rocks)), y_max+1):
+        print(''.join([' #'[(x,y) in rocks] for x in range(min(map(Point.getX, rocks)), max(map(Point.getX, rocks)) + 1)]))
     return rocks, y_max
 
 def solve(rocks: set, y_max: int, floor: bool) -> int:

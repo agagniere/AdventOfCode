@@ -6,11 +6,8 @@ def make_operation(string):
     if string == 'old * old':
         return lambda x: x**2
     _, op, s = string.split()
-    f = {'+': int.__add__, '*': int.__mul__}[op]
     k = int(s)
-    def result(value):
-        return f(value, k)
-    return result
+    return {'+': k.__add__, '*': k.__mul__}[op]
 
 class Monkey:
 
