@@ -25,7 +25,7 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 18||||:star::star:|:star::star:|:star::star:
 19||||:star::star:||
 20||||:star:|:star::star:|
-21|||||:star::star:|
+21|||||:star::star:|:star::star:
 22|||||:star:|
 23||||||
 24|||||:star::star:|
