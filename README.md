@@ -23,10 +23,10 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 16||||:star::star:|:star::star:|:star::star:
 17||||:star::star:|:star::star:|:star::star:
 18||||:star::star:|:star::star:|:star::star:
-19||||:star::star:||
+19||||:star::star:||:star:
 20||||:star:|:star::star:|:star::star:
 21|||||:star::star:|:star::star:
-22|||||:star:|
+22|||||:star:|:star:
 23||||||:star::star:
-24|||||:star::star:|
-25||||:star:|:star:|
+24|||||:star::star:|:star::star:
+25||||:star:|:star:|:star:
