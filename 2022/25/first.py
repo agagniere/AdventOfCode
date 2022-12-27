@@ -1,21 +1,19 @@
 import sys
 
-acc = 0
-for line in sys.stdin.readlines():
-    n = 0
-    for c in line.strip():
-        n *= 5
-        n += '=-012'.index(c) - 2
-    print(n)
-    acc += n
-print(acc)
+def from_snafu(s: str) -> int:
+    ans = 0
+    for c in s:
+        ans *= 5
+        ans += '=-012'.index(c) - 2
+    return ans
 
-def to_snafu(n):
+def to_snafu(n: int) -> str:
     snafu = []
     while n:
-        d = n % 5
-        snafu += ['012=-'[d]]
+        digit = n % 5
+        snafu.append('012=-'[digit])
         n //= 5
-        n += d > 2
+        n += (digit > 2)
     return ''.join(reversed(snafu))
-print(to_snafu(acc))
+
+print(to_snafu(sum(map(from_snafu, sys.stdin.read().split('\n')))))
