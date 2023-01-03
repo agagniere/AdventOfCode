@@ -51,35 +51,37 @@ class Blueprint:
         return cls(key.split()[1], map(Recipe.parse, value.split('.')[:-1]))
 
     def quality_level(self, max_minutes: int, max_robots: int) -> int:
-        fringe = deque([(1,
+        fringe = deque([(0,
                          add_dict(defaultdict(int), {ORE:1}),
-                         add_dict(defaultdict(int), {ORE:1}))])
+                         defaultdict(int))])
         best = 0
-        max_ore = max(r.costs[ORE] for r in self.recipes)
+        max_ore = max(r.costs[ORE] for r in self.recipes[1:])
         seen = set()
         count = 0
         while fringe:
             elapsed, robots, resources = fringe.popleft()
             count += 1
-            #print(f'After {elapsed} minutes, {dict(resources)}, with robots {dict(robots)}')
-            if elapsed == max_minutes:
-                #print(f'Finished with {dict(resources)}')
-                best = max(best, resources[GEODE])
-            else:
-                if resources[ORE] < max_ore:
-                    next_res = add_dict(resources, robots)
-                    key = tuple([robots[r] for r in (ORE, CLAY, OBSIDIAN, GEODE)] + [next_res[r] for r in (ORE, CLAY, OBSIDIAN, GEODE)])
-                    if key not in seen:
-                        seen.add(key)
-                        fringe += [(elapsed + 1, robots, next_res)]
-                for recipe in self.recipes:
-                    if recipe.can_afford_with(resources) and robots[recipe.resource] < max_robots:
-                        next_robots = add_dict(robots, {recipe.resource: 1})
-                        next_res = sub_dict(add_dict(resources, robots), recipe.costs)
-                        key = tuple([next_robots[r] for r in (ORE, CLAY, OBSIDIAN, GEODE)] + [next_res[r] for r in (ORE, CLAY, OBSIDIAN, GEODE)])
-                        if key not in seen:
-                            seen.add(key)
-                            fringe += [(elapsed + 1, next_robots, next_res)]
+            best = max(best, resources[GEODE] + (elapsed - max_minutes) * robots[GEODE])
+            #print(f'After {elapsed} minutes, {dict(resources)}, with robots {dict(robots)}: {best}')
+            for recipe in self.recipes:
+                if robots[recipe.resource] >= max_robots or (recipe.resource == ORE and robots[recipe.resource] >= max_ore):
+                    continue
+                can_wait = True
+                for res, count in recipe.costs.items():
+                    if robots[res] < 1:
+                        can_wait = False
+                        break
+                if can_wait:
+                    next_elapsed = elapsed + 1
+                    next_resources = resources.copy()
+                    while not recipe.can_afford_with(next_resources):
+                        next_resources = add_dict(next_resources, robots)
+                        next_elapsed += 1
+                    next_robots = add_dict(robots, {recipe.resource: 1})
+                    next_resources = sub_dict(next_resources, recipe.costs)
+                    next_resources = add_dict(next_resources, robots)
+                    if next_elapsed < max_minutes:
+                        fringe.append( (next_elapsed, next_robots, next_resources) )
         print(f'{len(seen):10}, {count:10}')
         return best
 
