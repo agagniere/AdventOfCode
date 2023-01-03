@@ -56,25 +56,31 @@ class Blueprint:
                          add_dict(defaultdict(int), {ORE:1}))])
         best = 0
         max_ore = max(r.costs[ORE] for r in self.recipes)
-        seen = 0
+        seen = set()
+        count = 0
         while fringe:
             elapsed, robots, resources = fringe.popleft()
-            seen += 1
+            count += 1
             #print(f'After {elapsed} minutes, {dict(resources)}, with robots {dict(robots)}')
             if elapsed == max_minutes:
                 #print(f'Finished with {dict(resources)}')
                 best = max(best, resources[GEODE])
             else:
                 if resources[ORE] < max_ore:
-                    fringe += [(elapsed + 1,
-                                robots,
-                                add_dict(resources, robots))]
+                    next_res = add_dict(resources, robots)
+                    key = tuple([robots[r] for r in (ORE, CLAY, OBSIDIAN, GEODE)] + [next_res[r] for r in (ORE, CLAY, OBSIDIAN, GEODE)])
+                    if key not in seen:
+                        seen.add(key)
+                        fringe += [(elapsed + 1, robots, next_res)]
                 for recipe in self.recipes:
                     if recipe.can_afford_with(resources) and robots[recipe.resource] < max_robots:
-                        fringe += [(elapsed + 1,
-                                    add_dict(robots, {recipe.resource: 1}),
-                                    sub_dict(add_dict(resources, robots), recipe.costs))]
-        print(seen)
+                        next_robots = add_dict(robots, {recipe.resource: 1})
+                        next_res = sub_dict(add_dict(resources, robots), recipe.costs)
+                        key = tuple([next_robots[r] for r in (ORE, CLAY, OBSIDIAN, GEODE)] + [next_res[r] for r in (ORE, CLAY, OBSIDIAN, GEODE)])
+                        if key not in seen:
+                            seen.add(key)
+                            fringe += [(elapsed + 1, next_robots, next_res)]
+        print(f'{len(seen):10}, {count:10}')
         return best
 
 def lines():
