@@ -12,12 +12,12 @@ union bunch
 {
 	struct
 	{
-		int8_t ore;
-		int8_t clay;
-		int8_t obsidian;
-		int8_t geode;
+		int16_t ore;
+		int16_t clay;
+		int16_t obsidian;
+		int16_t geode;
 	};
-	int8_t by_index[4];
+	int16_t by_index[4];
 };
 
 DECLARE_ENUM(
