@@ -127,7 +127,7 @@ typedef struct
 
 int quality_level(bunch_t recipes[4], int time_limit)
 {
-	iteration_t storage[20000];
+	iteration_t storage[300000];
 	t_deque     fringe[] = {DEQUE_NEW(storage)};
 	iteration_t current  = { .robots = { .ore = 1 } };
 	int         best     = 0;
