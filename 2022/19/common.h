@@ -5,21 +5,7 @@
 #include <ft_prepro/tools.h> /* MAX */
 
 #include <stdbool.h>
-#include <stdint.h> /* int*_t */
-
-typedef union bunch bunch_t;
-
-union bunch
-{
-	struct
-	{
-		int16_t ore;
-		int16_t clay;
-		int16_t obsidian;
-		int16_t geode;
-	};
-	int16_t by_index[4];
-};
+#include <stdint.h> /* int8_t */
 
 DECLARE_ENUM(
 	resource,
@@ -27,7 +13,29 @@ DECLARE_ENUM(
 	CLAY,
 	OBSIDIAN,
 	GEODE
-);
+); /* Declares: resource_count, string_from_resource */
+
+typedef union bunch      bunch_t;
+typedef struct iteration iteration_t;
+
+union bunch
+{
+	struct
+	{
+		uint8_t ore;
+		uint8_t clay;
+		uint8_t obsidian;
+		uint8_t geode;
+	};
+	uint8_t by_index[resource_count];
+};
+
+struct iteration
+{
+	bunch_t robots;
+	bunch_t resources;
+	uint8_t  time;
+};
 
 /**
  ** Returns the next unsigned int found in the string, or 0 if none is found.
@@ -56,24 +64,21 @@ int next_int(char* string)
 	scrFinish(0);
 }
 
-bunch_t add(bunch_t a, bunch_t b)
+void increment(bunch_t* a, bunch_t b)
 {
-	bunch_t s;
 	int     i = resource_count;
 
 	while (i --> 0)
-		s.by_index[i] = a.by_index[i] + b.by_index[i];
-	return s;
+		a->by_index[i] += b.by_index[i];
 }
 
 bunch_t opposite(bunch_t b)
 {
-	bunch_t o;
 	int     i = resource_count;
 
 	while (i --> 0)
-		o.by_index[i] = -b.by_index[i];
-	return o;
+		b.by_index[i] *= -1;
+	return b;
 }
 
 bool can_afford(bunch_t recipe, bunch_t resources)
@@ -86,7 +91,8 @@ bool can_afford(bunch_t recipe, bunch_t resources)
 	return true;
 }
 
-/*
+
+/* Buy the most complex robot affordable at each turn */
 int greedy(bunch_t recipes[4], int time_limit, bunch_t robots, bunch_t resources)
 {
 	int time    = 0;
@@ -102,36 +108,41 @@ int greedy(bunch_t recipes[4], int time_limit, bunch_t robots, bunch_t resources
 				buying = i;
 				break;
 			}
-		resources = add(resources, robots);
+		increment(&resources, robots);
 		if (buying != resource_count)
 		{
-			resources = add(resources, opposite(recipes[buying]));
+			increment(&resources, opposite(recipes[buying]));
 			robots.by_index[buying]++;
 		}
-
-		ft_printf("%2i [%2i %2i %2i %2i] [%2i %2i %2i %2i]\n", time,
-				  robots.ore, robots.clay, robots.obsidian, robots.geode,
-                  resources.ore, resources.clay, resources.obsidian, resources.geode);
 
 	}
 	return resources.geode;
 }
-*/
 
-typedef struct
+/* accumulate resources until we can afford the wanted robot */
+void simulate_until(iteration_t state, t_deque* fringe, bunch_t recipes[4], enum resource wanted, int time_limit)
 {
-	int8_t  time;
-	bunch_t robots;
-	bunch_t resources;
-} iteration_t;
+	while (!can_afford(recipes[wanted], state.resources))
+	{
+		increment(&state.resources, state.robots);
+		state.time += 1;
+	}
+	increment(&state.resources, opposite(recipes[wanted]));
+	increment(&state.resources, state.robots);
+	state.robots.by_index[wanted] += 1;
+	state.time += 1;
+	if (state.time < time_limit)
+		FTQ_PUSH_BACK_ONE(fringe, &state);
+}
+
 
 int quality_level(bunch_t recipes[4], int time_limit)
 {
-	iteration_t storage[300000];
+	iteration_t storage[200];
 	t_deque     fringe[] = {DEQUE_NEW(storage)};
-	iteration_t current  = { .robots = { .ore = 1 } };
+	iteration_t current  = {.robots = {.ore = 1}};
 	int         best     = 0;
-	int         max_ore  = MAX(recipes[CLAY].ore, recipes[OBSIDIAN].ore, recipes[GEODE].ore);
+	const int   max_ore  = MAX(recipes[CLAY].ore, recipes[OBSIDIAN].ore, recipes[GEODE].ore);
 	int         geodes;
 
 	ftq_intent(fringe, 'B'); /* Will only push back */
@@ -139,89 +150,21 @@ int quality_level(bunch_t recipes[4], int time_limit)
 	while (!ftq_is_empty(fringe))
 	{
 		FTQ_POP_FRONT_ONE(fringe, &current);
-		/*
-		ft_printf("%hhi: (%hi, %hi) -> (%hi, %hi)\n",
-				  current.time,
-				  current.robots.ore, current.robots.clay,
-
-				  current.resources.ore, current.resources.clay);
-		*/
-		if (current.robots.geode)
-		{
-			geodes = current.resources.geode + (time_limit - current.time) * current.robots.geode;
-			if (geodes > best)
-			{
-				/*ft_printf("By waiting with %hi geode robots, we can get %i geodes.\n",
-				  current.robots.geode, geodes);*/
-				best = geodes;
-			}
-		}
+		geodes = greedy(recipes, time_limit - current.time, current.robots, current.resources);
+		best = MAX(best, geodes);
 
 		if (current.robots.ore < max_ore)
-		{
-			iteration_t next = current;
-			while (next.resources.ore < recipes[ORE].ore)
-			{
-				next.resources = add(next.resources, next.robots);
-				next.time += 1;
-			}
-			next.resources = add(next.resources, opposite(recipes[ORE]));
-			next.resources = add(next.resources, next.robots);
-			next.robots.ore += 1;
-			next.time += 1;
-			if (next.time < time_limit)
-				FTQ_PUSH_BACK_ONE(fringe, &next);
-		}
-
+			simulate_until(current, fringe, recipes, ORE, time_limit);
 		if (current.robots.clay < recipes[OBSIDIAN].clay)
-		{
-			iteration_t next = current;
-			while (next.resources.ore < recipes[CLAY].ore)
-			{
-				next.resources = add(next.resources, next.robots);
-				next.time += 1;
-			}
-			next.resources = add(next.resources, opposite(recipes[CLAY]));
-			next.resources = add(next.resources, next.robots);
-			next.robots.clay += 1;
-			next.time += 1;
-			if (next.time < time_limit)
-				FTQ_PUSH_BACK_ONE(fringe, &next);
-		}
-
+			simulate_until(current, fringe, recipes, CLAY, time_limit);
+		/* Uncomment this block for an exhaustive search
+		** It is not required for my input, but it is for the sample input.
+		** It requires a muuuuch longer queue storage
 		if (current.robots.clay && current.robots.obsidian < recipes[GEODE].obsidian)
-		{
-			iteration_t next = current;
-			while (next.resources.ore < recipes[OBSIDIAN].ore
-				   || next.resources.clay < recipes[OBSIDIAN].clay)
-			{
-				next.resources = add(next.resources, next.robots);
-				next.time += 1;
-			}
-			next.resources = add(next.resources, opposite(recipes[OBSIDIAN]));
-			next.resources = add(next.resources, next.robots);
-			next.robots.obsidian += 1;
-			next.time += 1;
-			if (next.time < time_limit)
-				FTQ_PUSH_BACK_ONE(fringe, &next);
-		}
-
-		if (current.robots.obsidian)
-		{
-			iteration_t next = current;
-			while (next.resources.ore < recipes[GEODE].ore
-				   || next.resources.obsidian < recipes[GEODE].obsidian)
-			{
-				next.resources = add(next.resources, next.robots);
-				next.time += 1;
-			}
-			next.resources = add(next.resources, opposite(recipes[GEODE]));
-			next.resources = add(next.resources, next.robots);
-			next.robots.geode += 1;
-			next.time += 1;
-			if (next.time < time_limit)
-				FTQ_PUSH_BACK_ONE(fringe, &next);
-		}
+			simulate_until(current, fringe, recipes, OBSIDIAN, time_limit);
+		*/
+		// if (current.robots.obsidian)
+		//     simulate_until(current, fringe, recipes, GEODE, time_limit);
 	}
 	return best;
 }
