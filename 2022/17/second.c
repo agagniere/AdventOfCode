@@ -23,7 +23,7 @@ uint64_t check_for_cycle(uint64_t* stopped_rocks, uint64_t tower_height)
 		uint64_t cycles = (ITERATIONS - *stopped_rocks) / diff_C;
 
 		printf("Found a cycle after %llu rocks : the tower grows %llu units every %llu rocks\n",
-			   *stopped_rocks, diff_H, diff_C);
+		       *stopped_rocks, diff_H, diff_C);
 		*stopped_rocks += cycles * diff_C;
 		printf("Skipping %llu cycles to %llu rocks\n", cycles, *stopped_rocks);
 		return cycles * diff_H;
@@ -79,13 +79,12 @@ int main()
 			if (count && step % (5 * p_max) == 0)
 				archived += check_for_cycle(&count, archived + Y);
 			shift_rock(&R, pattern[step++ % p_max], pipe + y + 1);
-			if ((R.shape[0] & pipe[y])
-				|| (R.height > 1 && (R.shape[1] & pipe[y + 1])))
+			if ((R.shape[0] & pipe[y]) || (R.height > 1 && (R.shape[1] & pipe[y + 1])))
 			{
 				for (unsigned in_range(i, R.height))
 					pipe[y + i + 1] |= R.shape[i];
 				Y = PP_MAX(Y, y + R.height);
-				break ;
+				break;
 			}
 			y--;
 		}
