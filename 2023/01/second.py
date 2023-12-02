@@ -1,31 +1,18 @@
-def lines():
-    while True:
-        try:
-            yield input()
-        except:
-            break
+from utils import lines
 
-L = {
-    'one': 1,
-    'two': 2,
-    'three': 3,
-    'four': 4,
-    'five': 5,
-    'six': 6,
-    'seven': 7,
-    'eight': 8,
-    'nine': 9
-}
+spelled = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
+digit_from_string = {digit: i + 1 for i, digit in enumerate(spelled)}
 
-result = 0
-for line in lines():
+def extractValue(line: str) -> int:
     digits = []
     for i, c in enumerate(line):
         if c.isdigit():
             digits.append(int(c))
         else:
             for sub in [3,4,5]:
-                if line[i:][:sub] in L:
-                    digits.append(L[line[i:][:sub]])
-    result += 10 * digits[0] + digits[-1]
-print(result)
+                if line[i:][:sub] in digit_from_string:
+                    digits.append(digit_from_string[line[i:][:sub]])
+    return 10 * digits[0] + digits[-1]
+
+if __name__ == '__main__':
+    print(sum(map(extractValue, lines())))
