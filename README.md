@@ -6,7 +6,7 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 |Day|[2015](https://adventofcode.com/2015)|[2017](https://adventofcode.com/2017)|[2018](https://adventofcode.com/2018)|[2019](https://adventofcode.com/2019)|[2020](https://adventofcode.com/2020)|[2021](https://adventofcode.com/2021)|[2022](https://adventofcode.com/2022)|[2023](https://adventofcode.com/2023)|
 |--:| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 01|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:
-02|:star::star:|:star::star:||:star::star:|:star::star:|:star::star:|:star::star:|:star::star:
+02|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:
 03|:star::star:|:star::star:||:star::star:|:star::star:|:star::star:|:star::star:|:star::star:
 04|:star::star:|:star::star:|||:star::star:|:star::star:|:star::star:|:star::star:
 05|:star::star:|:star::star:|||:star::star:|:star::star:|:star::star:|:star::star:
