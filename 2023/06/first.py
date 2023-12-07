@@ -9,7 +9,9 @@ def simulate(time_limit: int, duration_held: int) -> int:
     return duration_held * remaining
 
 def number_of_ways_to_win(time_limit: int, record: int) -> int:
-    return sum([simulate(time_limit, hold) > record for hold in range(time_limit)])
+    for i, hold in enumerate(range(time_limit)):
+        if simulate(time_limit, hold) > record:
+            return time_limit + 1 - 2 * i
 
 def part1(time_limits: list[int], records: list[int]) -> int:
     return prod(number_of_ways_to_win(limit, record) for limit, record in zip(time_limits, records))
