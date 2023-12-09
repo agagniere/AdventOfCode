@@ -12,7 +12,7 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 05|:star::star:|:star::star:|||:star::star:|:star::star:|:star::star:|:star::star:
 06||:star::star:|||:star::star:|:star::star:|:star::star:|:star::star:
 07||:star::star:|||:star::star:|:star::star:|:star::star:|:star::star:
-08|||||:star::star:|:star::star:|:star::star:|
+08|||||:star::star:|:star::star:|:star::star:|:star::star:
 09|||||:star::star:|:star::star:|:star::star:|
 10|||||:star::star:|:star::star:|:star::star:|
 11|||||:star::star:|:star::star:|:star::star:|
