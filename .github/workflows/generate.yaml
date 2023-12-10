@@ -16,41 +16,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
       - name: Update readme
         run: |
+          # Without this line, the values set inside the loop wouldnt persist
           out="README.md"
           cat <<-'EOF' > $out
           # Advent of Code
 
-          My solutions for the [Advent of Code](https://adventofcode.com), a challenge started by [200,000+](https://adventofcode.com/2022/stats) coders
+          My solutions for the [Advent of Code](https://adventofcode.com), a challenge started by [200,000+](https://adventofcode.com/2023/stats) coders
 
           ### Progress
           EOF
-          { printf "|Day" ;
-            for folder in $("ls" -d */)
-            do
-                printf "|[${folder%/}](https://adventofcode.com/${folder%/})"
-            done
-            echo "|"
-          } >> $out
-          { printf "|--:" ;
-            for folder in $("ls" -d */)
-            do
-                printf "| :---: "
-            done
-            echo "|"
-          } >> $out
-          for i in $(seq -w 25)
-          do
-              printf "$i"
-              for folder in $("ls" -d */)
-              do
-                  printf "|"
-                  compgen -G "$folder$i/first*" >/dev/null && printf ":star:"
-                  compgen -G "$folder$i/second*" > /dev/null && printf ":star:"
-              done
-              printf "\n"
-          done >> $out
+          bash generate_report.sh >> $out
       - name: Commit change
         uses: EndBug/add-and-commit@v9
         with:
