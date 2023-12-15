@@ -33,10 +33,10 @@ do
 done
 
 counter=0
-printf "| Total "
+printf "| Total"
 for folder in $("ls" -d */)
 do
-    printf "| %i " ${stars[$folder]}
+    printf " | %i" ${stars[$folder]}
 	counter=$(( counter + ${stars[$folder]} ))
 done
-printf "\n\nTotal stars: %i" $counter
+printf "\n\nTotal stars: %i\n" $counter
