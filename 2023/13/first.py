@@ -1,4 +1,5 @@
-from utils import lines, split, Point
+from utils import Point, lines, split
+
 
 class Part1:
 

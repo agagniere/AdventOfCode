@@ -1,5 +1,7 @@
-from utils import lines, debug
 from collections import defaultdict
+
+from utils import debug, lines
+
 
 def parser(lines):
     "From an iterable of strings, iterate over the maps described"

@@ -1,4 +1,4 @@
-from utils import lines, Point
+from utils import Point, lines
 
 board = list(lines())
 

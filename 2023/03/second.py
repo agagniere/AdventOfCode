@@ -1,6 +1,7 @@
-from utils import lines, Point
 from collections import defaultdict
 from math import prod
+
+from utils import Point, lines
 
 board = list(lines())
 gears = defaultdict(list)

@@ -20,16 +20,16 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 | 13  |||||:star::star:|:star::star:|:star::star:|:star::star:
 | 14  |||||:star::star:|:star::star:|:star::star:|:star::star:
 | 15  |||||:star::star:|:star::star:|:star::star:|:star::star:
-| 16  |||||:star::star:|:star::star:|:star::star:|
-| 17  |||||:star::star:|:star::star:|:star::star:|
-| 18  |||||:star::star:|:star::star:|:star::star:|
-| 19  |||||:star::star:||:star::star:|
+| 16  |||||:star::star:|:star::star:|:star::star:|:star::star:
+| 17  |||||:star::star:|:star::star:|:star::star:|:star::star:
+| 18  |||||:star::star:|:star::star:|:star::star:|:star::star:
+| 19  |||||:star::star:||:star::star:|:star::star:
 | 20  |||||:star:|:star::star:|:star::star:|
 | 21  |||||:star::star:|:star::star:|:star::star:|
 | 22  ||||||:star:|:star::star:|
 | 23  |||||||:star::star:|
 | 24  ||||||:star::star:|:star::star:|
 | 25  |||||:star:|:star:|:star::star:|
-| Total | 10 | 14 | 4 | 6 | 42 | 44 | 50 | 30
+| Total | 10 | 14 | 4 | 6 | 42 | 44 | 50 | 38
 
-Total stars: 200
+Total stars: 208

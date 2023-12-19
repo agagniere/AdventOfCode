@@ -1,7 +1,8 @@
-from utils import lines
 from collections import Counter
 
-from first import Hand, CamelCards
+from first import CamelCards, Hand
+from utils import lines
+
 
 class CamelCardsVariant(CamelCards):
     CARDS = "J23456789TQKA"
@@ -25,6 +26,7 @@ if __name__ == '__main__':
 # ------------------------------
 
 from unittest import TestCase
+
 
 class TestDay7_2(TestCase):
 

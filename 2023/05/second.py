@@ -1,8 +1,9 @@
-from utils import lines, debug
 from collections import defaultdict
-from more_itertools import grouper
 
 from first import parser
+from more_itertools import grouper
+from utils import debug, lines
+
 
 class Range:
     def __init__(self, start, one_past_end):

@@ -22,6 +22,7 @@ if __name__ == '__main__':
 
 from unittest import TestCase
 
+
 class TestDay8_2(TestCase):
     def test_solve(self):
         sample = {

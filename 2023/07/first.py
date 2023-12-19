@@ -1,5 +1,6 @@
-from utils import lines
 from collections import Counter, namedtuple
+
+from utils import lines
 
 Hand = namedtuple('Hand', ['type', 'card_values', 'bid'])
 
@@ -33,6 +34,7 @@ if __name__ == '__main__':
 # ------------------------------
 
 from unittest import TestCase
+
 
 class TestDay7_1(TestCase):
 

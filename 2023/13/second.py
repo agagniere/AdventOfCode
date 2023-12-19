@@ -1,6 +1,6 @@
-from utils import lines, split, Point
-
 from first import Part1
+from utils import Point, lines, split
+
 
 class Part2(Part1):
 
@@ -21,7 +21,9 @@ if __name__ == '__main__':
 # ------------------------------
 
 from unittest import TestCase
+
 from first import sample
+
 
 class TestDay13_1(TestCase):
 

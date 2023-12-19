@@ -1,5 +1,7 @@
-from utils import lines, Point
 from collections import Counter, defaultdict
+
+from utils import Point, lines
+
 
 def part1(lines):
     previous = defaultdict(int)
