@@ -18,6 +18,7 @@ if __name__ == '__main__':
 
 from unittest import TestCase
 
+
 class TestDay4_1(TestCase):
 
     def test_parsing(self):

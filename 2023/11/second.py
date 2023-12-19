@@ -17,6 +17,7 @@ from unittest import TestCase
 
 from first import sample
 
+
 class TestDay11_2(TestCase):
 
     def test_part1(self):

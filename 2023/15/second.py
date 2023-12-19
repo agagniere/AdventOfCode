@@ -1,5 +1,6 @@
+from collections import OrderedDict, defaultdict
+
 from first import santa_hash
-from collections import defaultdict, OrderedDict
 
 
 def execute(instructions: list[str]):
@@ -24,6 +25,7 @@ if __name__ == '__main__':
 from unittest import TestCase
 
 from first import sample
+
 
 class TestDay15_1(TestCase):
 

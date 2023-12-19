@@ -1,5 +1,6 @@
 import sys
 
+
 def lines():
     while True:
         try:

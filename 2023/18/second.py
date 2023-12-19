@@ -1,7 +1,7 @@
 from collections import deque
 
-from utils import Point, lines
 from first import MOVE
+from utils import Point, lines
 
 
 def parse_edge(lines) -> list[Point]:

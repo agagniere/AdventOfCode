@@ -1,5 +1,6 @@
 from utils import lines
 
+
 def parse(line: str) -> list[int]:
     return list(map(int, line.split()))
 
@@ -18,6 +19,7 @@ if __name__ == '__main__':
 # ------------------------------
 
 from unittest import TestCase
+
 
 class TestDay9_1(TestCase):
 

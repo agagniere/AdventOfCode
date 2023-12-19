@@ -1,4 +1,4 @@
-from first import simulate, number_of_ways_to_win
+from first import number_of_ways_to_win, simulate
 
 
 def parse(line: str) -> list[str]:
@@ -12,6 +12,7 @@ if __name__ == '__main__':
 # ------------------------------
 
 from unittest import TestCase
+
 
 class TestDay6_2(TestCase):
 

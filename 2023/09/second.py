@@ -1,5 +1,6 @@
-from utils import lines
 from first import parse
+from utils import lines
+
 
 def extrapolate(sequence: list[int]) -> int:
     diff = [b - a for a, b in zip(sequence, sequence[1:])]
@@ -16,6 +17,7 @@ if __name__ == '__main__':
 # ------------------------------
 
 from unittest import TestCase
+
 
 class TestDay9_2(TestCase):
 

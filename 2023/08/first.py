@@ -34,6 +34,7 @@ if __name__ == '__main__':
 
 from unittest import TestCase
 
+
 class TestDay8_1(TestCase):
     sample = {
         'AAA = (BBB, BBB)': ('AAA', 'BBB', 'BBB'),

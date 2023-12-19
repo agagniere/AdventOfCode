@@ -77,6 +77,7 @@ if __name__ == '__main__':
 
 from unittest import TestCase
 
+
 class TestDay10_1(TestCase):
 
     samples = [

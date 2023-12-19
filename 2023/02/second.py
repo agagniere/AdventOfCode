@@ -1,6 +1,8 @@
-from utils import lines
 from collections import defaultdict
 from math import prod
+
+from utils import lines
+
 
 def power(line):
     game, draws = line.split(': ')

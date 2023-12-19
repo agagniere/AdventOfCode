@@ -1,5 +1,6 @@
 from functools import cache
 
+
 @cache
 def santa_hash(string: str) -> int:
     result = 0

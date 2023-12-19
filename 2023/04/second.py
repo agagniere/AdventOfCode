@@ -1,5 +1,7 @@
-from utils import lines
 from collections import defaultdict
+
+from utils import lines
+
 
 def toIntegerSet(string: str) -> set[int]:
     "Converts '  1 21 53 59 44 ' to {1, 21, 53, 59, 44}"
@@ -24,6 +26,7 @@ if __name__ == '__main__':
 # ------------------------------
 
 from unittest import TestCase
+
 
 class TestDay4_2(TestCase):
 

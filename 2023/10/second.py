@@ -1,7 +1,6 @@
 from first import DISPLAY, TILES, find_loop, parse
 from utils import Point, lines
 
-
 # Constants
 
 INFER_TILE = {tuple(sorted(pair)): c for c, pair in TILES.items()}
@@ -46,6 +45,7 @@ if __name__ == '__main__':
 # ------------------------------
 
 from unittest import TestCase
+
 
 class TestDay10_2(TestCase):
 

@@ -1,7 +1,9 @@
-from utils import lines, Point
 from collections import Counter
 from enum import IntEnum, auto
 from functools import cache
+
+from utils import Point, lines
+
 
 @cache
 def tilt_left(row: str) -> str:
