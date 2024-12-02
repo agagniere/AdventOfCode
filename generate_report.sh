@@ -1,3 +1,5 @@
+#! /bin/bash
+
 set -e # Exit on fail
 set -u # Exit if using an undefined variable
 set -o pipefail # A pipe fails if one of its command fails
@@ -28,6 +30,7 @@ do
         printf "|"
         compgen -G "$folder$i/first*" >/dev/null && printf ":star": && stars[$folder]=$(( ${stars[$folder]} + 1 ))
         compgen -G "$folder$i/second*" > /dev/null && printf ":star:" && stars[$folder]=$(( ${stars[$folder]} + 1 ))
+        compgen -G "$folder$i/solve*" > /dev/null && printf ":star::star:" && stars[$folder]=$(( ${stars[$folder]} + 2 ))
     done
     printf "\n"
 done
