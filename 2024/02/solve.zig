@@ -14,7 +14,7 @@ fn parse(allocator: std.mem.Allocator, line: []const u8) !NumberList {
 }
 
 /// Part 1
-fn is_safe(report: []i32) bool {
+fn is_safe(report: []const i32) bool {
     const increasing = report[1] > report[0];
 
     for (report[0..(report.len - 1)], report[1..]) |level, next| {
@@ -56,9 +56,7 @@ fn solve(allocator: std.mem.Allocator, input: anytype) ![2]u32 {
 
 pub fn main() !void {
     var gpa: std.heap.GeneralPurposeAllocator(.{}) = .{};
-    // this line is what logs memory leaks on exit
     defer _ = gpa.deinit();
-    // this allocator is how we actually allocate memory
     const allocator = gpa.allocator();
 
     var stdin = std.io.bufferedReader(std.io.getStdIn().reader());
@@ -66,4 +64,50 @@ pub fn main() !void {
     const solution = try solve(allocator, stdin.reader());
     std.debug.print("Number of safe reports            : {:10}\n", .{solution[0]});
     std.debug.print("Number of safe (or almost) reports: {:10}\n", .{solution[1]});
+}
+
+// -------------------- Tests --------------------
+
+test is_safe {
+    try std.testing.expect(is_safe(&.{ 7, 6, 4, 2, 1 }));
+    try std.testing.expect(!is_safe(&.{ 1, 2, 7, 8, 9 }));
+    try std.testing.expect(!is_safe(&.{ 9, 7, 6, 2, 1 }));
+    try std.testing.expect(!is_safe(&.{ 1, 3, 2, 4, 5 }));
+    try std.testing.expect(!is_safe(&.{ 8, 6, 4, 4, 1 }));
+    try std.testing.expect(is_safe(&.{ 1, 3, 6, 7, 9 }));
+}
+
+test is_safe_or_almost {
+    const reports: []const struct { result: bool, input: []const i32 } = &.{
+        .{ .result = true, .input = &.{ 7, 6, 4, 2, 1 } },
+        .{ .result = false, .input = &.{ 1, 2, 7, 8, 9 } },
+        .{ .result = false, .input = &.{ 9, 7, 6, 2, 1 } },
+        .{ .result = true, .input = &.{ 1, 3, 2, 4, 5 } },
+        .{ .result = true, .input = &.{ 8, 6, 4, 4, 1 } },
+        .{ .result = true, .input = &.{ 1, 3, 6, 7, 9 } },
+    };
+
+    for (reports) |report| {
+        var input = try NumberList.initCapacity(std.testing.allocator, 5);
+        defer input.deinit();
+        try input.appendSlice(report.input);
+
+        try std.testing.expectEqual(report.result, is_safe_or_almost(input));
+    }
+}
+
+test solve {
+    const input =
+        \\7 6 4 2 1
+        \\1 2 7 8 9
+        \\9 7 6 2 1
+        \\1 3 2 4 5
+        \\8 6 4 4 1
+        \\1 3 6 7 9
+    ;
+    var input_stream = std.io.fixedBufferStream(input);
+
+    const result = try solve(std.testing.allocator, input_stream.reader());
+    try std.testing.expectEqual(2, result[0]);
+    try std.testing.expectEqual(4, result[1]);
 }

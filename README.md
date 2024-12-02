@@ -5,8 +5,8 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 ### Progress
 | Day |[2015](https://adventofcode.com/2015)|[2017](https://adventofcode.com/2017)|[2018](https://adventofcode.com/2018)|[2019](https://adventofcode.com/2019)|[2020](https://adventofcode.com/2020)|[2021](https://adventofcode.com/2021)|[2022](https://adventofcode.com/2022)|[2023](https://adventofcode.com/2023)|[2024](https://adventofcode.com/2024)|
 | --: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: | :--------: |
-| 01  |:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|
-| 02  |:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|
+| 01  |:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:
+| 02  |:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:
 | 03  |:star::star:|:star::star:||:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|
 | 04  |:star::star:|:star::star:|||:star::star:|:star::star:|:star::star:|:star::star:|
 | 05  |:star::star:|:star::star:|||:star::star:|:star::star:|:star::star:|:star::star:|
@@ -30,6 +30,6 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 | 23  |||||||:star::star:|:star:|
 | 24  ||||||:star::star:|:star::star:|:star:|
 | 25  |||||:star:|:star:|:star::star:||
-| Total | 10 | 14 | 4 | 6 | 42 | 44 | 50 | 44 | 0
+| Total | 10 | 14 | 4 | 6 | 42 | 44 | 50 | 44 | 4
 
-Total stars: 214
+Total stars: 218

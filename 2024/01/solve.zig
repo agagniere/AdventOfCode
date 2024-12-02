@@ -35,33 +35,28 @@ fn part1(input: Day01) u64 {
     std.sort.pdq(u32, input.right.items, {}, std.sort.asc(u32));
 
     for (input.left.items, input.right.items) |a, b| {
-        result += if (a > b) (a - b) else (b - a);
+        result += @max(a, b) - @min(a, b);
     }
     return result;
 }
 
 fn part2(allocator: std.mem.Allocator, input: Day01) !u64 {
+    var result: u64 = 0;
     var count = Histogram.init(allocator);
     defer count.deinit();
-
-    var result: u64 = 0;
 
     for (input.right.items) |b| {
         try count.put(b, 1 + (count.get(b) orelse 0));
     }
-
     for (input.left.items) |a| {
         result += a * (count.get(a) orelse 0);
     }
-
     return result;
 }
 
 pub fn main() !void {
     var gpa: std.heap.GeneralPurposeAllocator(.{}) = .{};
-    // this line is what logs memory leaks on exit
     defer _ = gpa.deinit();
-    // this allocator is how we actually allocate memory
     const allocator = gpa.allocator();
 
     var stdin = std.io.bufferedReader(std.io.getStdIn().reader());
@@ -71,4 +66,23 @@ pub fn main() !void {
 
     std.debug.print("lists total distance  : {:10}\n", .{part1(input)});
     std.debug.print("lists similarity score: {:10}\n", .{try part2(allocator, input)});
+}
+
+// -------------------- Tests --------------------
+
+test {
+    const sample =
+        \\3   4
+        \\4   3
+        \\2   5
+        \\1   3
+        \\3   9
+        \\3   3
+    ;
+    var stream = std.io.fixedBufferStream(sample);
+    const input = try parse(std.testing.allocator, stream.reader());
+    defer input.release();
+
+    try std.testing.expectEqual(11, part1(input));
+    try std.testing.expectEqual(31, try part2(std.testing.allocator, input));
 }
