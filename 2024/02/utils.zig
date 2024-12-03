@@ -20,11 +20,3 @@ fn LineIterator(comptime size: usize, comptime readerType: type, comptime delimi
 pub fn lineIterator(reader: anytype) LineIterator(2048, @TypeOf(reader), '\n') {
     return .{ .reader = reader };
 }
-
-pub fn lineIteratorSize(comptime size: usize, reader: anytype) LineIterator(size, @TypeOf(reader), '\n') {
-    return .{ .reader = reader };
-}
-
-pub fn lineIteratorCustom(comptime size: usize, comptime delimiter: u8, reader: anytype) LineIterator(size, @TypeOf(reader), delimiter) {
-    return .{ .reader = reader };
-}

@@ -1,0 +1,5 @@
+.{
+    .name = "utils-2024",
+    .version = "0.0.1",
+    .paths = .{ "build.zig", "build.zig.zon", "utils.zig" },
+}
