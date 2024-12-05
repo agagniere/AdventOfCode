@@ -1,0 +1,11 @@
+.{
+    .name = "intcode",
+    .version = "0.0.5",
+    .dependencies = .{
+        .libft = .{
+            .url = "git+https://github.com/agagniere/Libft#03e1669da64f9dbb0aa03f1f46e14efe4353ab51",
+            .hash = "122068f7a39abb7b4baab50d424fb490f757ceefc414b60d2d34be3c1b0c85b69641",
+        },
+    },
+    .paths = .{ "build.zig", "build.zig.zon", "intcode.c" },
+}
