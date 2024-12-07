@@ -10,7 +10,7 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 | 03  |:star::star:|:star::star:||:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:
 | 04  |:star::star:|:star::star:||:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:
 | 05  |:star::star:|:star::star:||:star::star:|:star::star:|:star::star:|:star::star:|:star::star:|:star::star:
-| 06  ||:star::star:|||:star::star:|:star::star:|:star::star:|:star::star:|
+| 06  ||:star::star:|||:star::star:|:star::star:|:star::star:|:star::star:|:star::star:
 | 07  ||:star::star:|||:star::star:|:star::star:|:star::star:|:star::star:|
 | 08  |||||:star::star:|:star::star:|:star::star:|:star::star:|
 | 09  |||||:star::star:|:star::star:|:star::star:|:star::star:|
@@ -30,6 +30,6 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 | 23  |||||||:star::star:|:star:|
 | 24  ||||||:star::star:|:star::star:|:star:|
 | 25  |||||:star:|:star:|:star::star:||
-| Total | 10 | 14 | 4 | 10 | 42 | 44 | 50 | 44 | 10
+| Total | 10 | 14 | 4 | 10 | 42 | 44 | 50 | 44 | 12
 
-Total stars: 228
+Total stars: 230
