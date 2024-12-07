@@ -5,7 +5,7 @@ const PointSet = std.AutoArrayHashMapUnmanaged(Point, void);
 const InitialSituation = std.meta.Tuple(&.{ Point, Cardinal, PointSet, Point });
 const Allocator = std.mem.Allocator;
 const OrientedPoint = std.meta.Tuple(&.{ Point, Cardinal });
-const OrientedPointSet = std.AutoHashMap(OrientedPoint, void);
+const OrientedPointSet = std.AutoHashMapUnmanaged(OrientedPoint, void);
 
 const Cardinal = enum(u2) {
     north,
@@ -93,44 +93,47 @@ fn part1(allocator: Allocator, guard: Guard, obstacles: PointSet) !u64 {
 }
 
 fn part2(allocator: Allocator, guard: Guard, obstacles: PointSet) !u64 {
-    //var arena = std.heap.ArenaAllocator.init(_allocator);
-    //defer arena.deinit();
-    //const alloc = arena.allocator();
+    var arena = std.heap.ArenaAllocator.init(allocator);
+    defer arena.deinit();
+    const alloc = arena.allocator();
 
-    //var pastStates = OrientedPointSet.init();
+    var pastStates: OrientedPointSet = .empty;
+    var visited: PointSet = .empty;
+    var possibleObstacle: PointSet = .empty;
+    var altPastStates: OrientedPointSet = .empty;
+    var altObstacles: PointSet = try obstacles.clone(alloc);
 
-    var visited = OrientedPointSet.init(allocator);
-    defer visited.deinit();
-    var F: PointSet = .empty;
-    defer F.deinit(allocator);
-    var visitedWithExtras = OrientedPointSet.init(allocator);
-    defer visitedWithExtras.deinit();
-    var possibleExtras: PointSet = .empty;
-    defer possibleExtras.deinit(allocator);
-    var withExtra = try obstacles.clone(allocator);
-    defer withExtra.deinit(allocator);
-
+    const area: u32 = @intCast(guard.patrolArea.x * guard.patrolArea.y);
     var patrol = guard;
     var previous = guard.position;
 
-    try visited.put(.{ guard.position, guard.facing }, {});
+    try pastStates.ensureTotalCapacity(alloc, area);
+    try visited.ensureTotalCapacity(alloc, area);
+    try altObstacles.ensureUnusedCapacity(alloc, 1);
+    try altPastStates.ensureTotalCapacity(alloc, area);
+    try possibleObstacle.ensureTotalCapacity(alloc, 2 * obstacles.count());
+
+    pastStates.putAssumeCapacity(.{ guard.position, guard.facing }, {});
+    visited.putAssumeCapacity(guard.position, {});
     while (patrol.next(obstacles)) |pos| {
-        try visited.put(pos, {});
-        if (!std.meta.eql(previous, pos[0]) and !possibleExtras.contains(pos[0]) and !std.meta.eql(pos[0], guard.position) and !F.contains(pos[0])) {
-            try withExtra.put(allocator, pos[0], {});
-            var alternative = Guard{ .position = previous, .facing = pos[1].next(), .patrolArea = guard.patrolArea };
-            while (alternative.next(withExtra)) |alt| {
-                if (visited.contains(alt) or visitedWithExtras.contains(alt)) {
-                    try possibleExtras.put(allocator, pos[0], {});
-                    break;
+        pastStates.putAssumeCapacity(pos, {});
+        if (!std.meta.eql(previous, pos[0])) {
+            if (!visited.contains(pos[0])) {
+                var alternative = Guard{ .position = previous, .facing = pos[1].next(), .patrolArea = guard.patrolArea };
+                altObstacles.putAssumeCapacity(pos[0], {});
+                while (alternative.next(altObstacles)) |alt| {
+                    if (pastStates.contains(alt) or altPastStates.contains(alt)) {
+                        possibleObstacle.putAssumeCapacity(pos[0], {});
+                        break;
+                    }
+                    altPastStates.putAssumeCapacity(alt, {});
                 }
-                try visitedWithExtras.put(alt, {});
+                altPastStates.clearRetainingCapacity();
+                _ = altObstacles.swapRemove(pos[0]);
             }
-            _ = withExtra.swapRemove(pos[0]);
-            visitedWithExtras.clearRetainingCapacity();
+            visited.putAssumeCapacity(pos[0], {});
+            previous = pos[0];
         }
-        try F.put(allocator, pos[0], {});
-        previous = pos[0];
     }
 
     // for (0..@intCast(guard.patrolArea.y)) |y| {
@@ -138,14 +141,14 @@ fn part2(allocator: Allocator, guard: Guard, obstacles: PointSet) !u64 {
     //         const p = Point{ .x = @intCast(x), .y = @intCast(y) };
     //         if (obstacles.contains(p)) {
     //             std.debug.print("#", .{});
-    //         } else if (possibleExtras.contains(p)) {
+    //         } else if (possibleObstacle.contains(p)) {
     //             std.debug.print("O", .{});
     //         } else std.debug.print(".", .{});
     //     }
     //     std.debug.print("\n", .{});
     // }
 
-    return possibleExtras.count();
+    return possibleObstacle.count();
 }
 
 pub fn main() !void {
