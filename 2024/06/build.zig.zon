@@ -1,5 +1,5 @@
 .{
-    .name = "day04",
+    .name = "day06",
     .version = "0.1.0",
     .dependencies = .{
         .utils = .{

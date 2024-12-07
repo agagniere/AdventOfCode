@@ -2,12 +2,14 @@ const std = @import("std");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
-    const optimize = b.standardOptimizeOption(.{});
+    const optimize = b.standardOptimizeOption(.{
+        .preferred_optimize_mode = .ReleaseFast,
+    });
 
     const utils = b.dependency("utils", .{ .target = target, .optimize = optimize }).module("utils");
 
     const exe = b.addExecutable(.{
-        .name = "day4",
+        .name = "day6",
         .root_source_file = b.path("solve.zig"),
         .target = target,
         .optimize = optimize,

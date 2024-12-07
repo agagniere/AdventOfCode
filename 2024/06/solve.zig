@@ -1,10 +1,11 @@
 const std = @import("std");
 const utils = @import("utils");
 
-const PointSet = std.AutoHashMap(Point, void);
+const PointSet = std.AutoArrayHashMapUnmanaged(Point, void);
 const InitialSituation = std.meta.Tuple(&.{ Point, Cardinal, PointSet, Point });
 const Allocator = std.mem.Allocator;
-const OrientedPointSet = std.AutoHashMap(std.meta.Tuple(&.{ Point, Cardinal }), void);
+const OrientedPoint = std.meta.Tuple(&.{ Point, Cardinal });
+const OrientedPointSet = std.AutoHashMap(OrientedPoint, void);
 
 const Cardinal = enum(u2) {
     north,
@@ -12,14 +13,8 @@ const Cardinal = enum(u2) {
     south,
     east,
 
-    pub fn fromChar(c: u8) !Cardinal {
-        return switch (c) {
-            '^' => .north,
-            '>' => .west,
-            'v' => .south,
-            '<' => .east,
-            else => error.InvalidChar,
-        };
+    pub fn next(self: Cardinal) Cardinal {
+        return @enumFromInt(@intFromEnum(self) +% 1);
     }
 };
 
@@ -45,105 +40,110 @@ const Point = struct {
     }
 };
 
+const Guard = struct {
+    position: Point,
+    facing: Cardinal,
+    patrolArea: Point,
+
+    pub fn next(self: *Guard, obstacles: PointSet) ?OrientedPoint {
+        const peek = self.position.neighbor(self.facing);
+        if (!peek.isInBounds(self.patrolArea)) {
+            return null;
+        } else if (obstacles.contains(peek)) {
+            self.facing = self.facing.next();
+        } else {
+            self.position = peek;
+        }
+        return .{ self.position, self.facing };
+    }
+};
+
 pub fn parse(allocator: Allocator, input: anytype) !InitialSituation {
-    var obstacles = PointSet.init(allocator);
+    var obstacles: PointSet = .empty;
     var guard: ?Point = null;
-    var facing: ?Cardinal = null;
     var lines = utils.lineIterator(input);
-    var max_x: i32 = 0;
+    var bound_x: i32 = 0;
     var y: i32 = 0;
 
     while (lines.next()) |line| {
+        bound_x = @intCast(line.len);
         for (line, 0..line.len) |c, x| {
             if (c == '#') {
-                try obstacles.put(.{ .x = @intCast(x), .y = y }, {});
-            } else if (std.mem.indexOfScalar(u8, "^>v<", c)) |_| {
+                try obstacles.put(allocator, .{ .x = @intCast(x), .y = y }, {});
+            } else if (c == '^') {
                 guard = .{ .x = @intCast(x), .y = y };
-                facing = try Cardinal.fromChar(c);
             }
-            if (x > max_x)
-                max_x = @intCast(x);
         }
         y += 1;
     }
-    return .{ guard.?, facing.?, obstacles, .{ .x = max_x + 1, .y = y } };
+    return .{ guard.?, Cardinal.north, obstacles, .{ .x = bound_x, .y = y } };
 }
 
-fn part1(allocator: Allocator, guardPos: Point, guardDir: Cardinal, obstacles: PointSet, bounds: Point) !u64 {
-    var visited = PointSet.init(allocator);
-    defer visited.deinit();
-    var current = guardPos;
-    var facing = guardDir;
+fn part1(allocator: Allocator, guard: Guard, obstacles: PointSet) !u64 {
+    var visited: PointSet = .empty;
+    defer visited.deinit(allocator);
+    var patrol = guard;
 
-    while (current.isInBounds(bounds)) {
-        try visited.put(current, {});
-        const peek = current.neighbor(facing);
-        if (obstacles.contains(peek)) {
-            facing = @enumFromInt(@intFromEnum(facing) +% 1);
-        } else {
-            current = peek;
-        }
+    try visited.ensureTotalCapacity(allocator, @intCast(guard.patrolArea.x * guard.patrolArea.y));
+    visited.putAssumeCapacity(guard.position, {});
+    while (patrol.next(obstacles)) |pos| {
+        visited.putAssumeCapacity(pos[0], {});
     }
-
     return visited.count();
 }
 
-fn isInLoop(allocator: Allocator, guardPos: Point, guardDir: Cardinal, obstacles: PointSet, bounds: Point) !bool {
+fn part2(allocator: Allocator, guard: Guard, obstacles: PointSet) !u64 {
+    //var arena = std.heap.ArenaAllocator.init(_allocator);
+    //defer arena.deinit();
+    //const alloc = arena.allocator();
+
+    //var pastStates = OrientedPointSet.init();
+
     var visited = OrientedPointSet.init(allocator);
     defer visited.deinit();
-    var current = guardPos;
-    var facing = guardDir;
+    var F: PointSet = .empty;
+    defer F.deinit(allocator);
+    var visitedWithExtras = OrientedPointSet.init(allocator);
+    defer visitedWithExtras.deinit();
+    var possibleExtras: PointSet = .empty;
+    defer possibleExtras.deinit(allocator);
+    var withExtra = try obstacles.clone(allocator);
+    defer withExtra.deinit(allocator);
 
-    while (current.isInBounds(bounds)) {
-        if (visited.contains(.{ current, facing }))
-            return true;
-        try visited.put(.{ current, facing }, {});
-        const peek = current.neighbor(facing);
-        if (obstacles.contains(peek)) {
-            facing = @enumFromInt(@intFromEnum(facing) +% 1);
-        } else {
-            current = peek;
-        }
-    }
-    return false;
-}
+    var patrol = guard;
+    var previous = guard.position;
 
-fn part2(allocator: Allocator, guardPos: Point, guardDir: Cardinal, obstacles: PointSet, bounds: Point) !u64 {
-    var current = guardPos;
-    var facing = guardDir;
-    var possibleExtras = PointSet.init(allocator);
-    defer possibleExtras.deinit();
-
-    while (current.isInBounds(bounds)) {
-        const peek = current.neighbor(facing);
-        if (obstacles.contains(peek)) {
-            facing = @enumFromInt(@intFromEnum(facing) +% 1);
-        } else {
-            if (peek.isInBounds(bounds) and !possibleExtras.contains(peek)) {
-                var obstacles_with_extra = try obstacles.clone();
-                defer obstacles_with_extra.deinit();
-
-                try obstacles_with_extra.put(peek, {});
-                if (try isInLoop(allocator, current, facing, obstacles_with_extra, bounds))
-                    try possibleExtras.put(peek, {});
+    try visited.put(.{ guard.position, guard.facing }, {});
+    while (patrol.next(obstacles)) |pos| {
+        try visited.put(pos, {});
+        if (!std.meta.eql(previous, pos[0]) and !possibleExtras.contains(pos[0]) and !std.meta.eql(pos[0], guard.position) and !F.contains(pos[0])) {
+            try withExtra.put(allocator, pos[0], {});
+            var alternative = Guard{ .position = previous, .facing = pos[1].next(), .patrolArea = guard.patrolArea };
+            while (alternative.next(withExtra)) |alt| {
+                if (visited.contains(alt) or visitedWithExtras.contains(alt)) {
+                    try possibleExtras.put(allocator, pos[0], {});
+                    break;
+                }
+                try visitedWithExtras.put(alt, {});
             }
-            current = peek;
+            _ = withExtra.swapRemove(pos[0]);
+            visitedWithExtras.clearRetainingCapacity();
         }
+        try F.put(allocator, pos[0], {});
+        previous = pos[0];
     }
 
-    for (0..@intCast(bounds.y)) |y| {
-        for (0..@intCast(bounds.x)) |x| {
-            const p = Point{ .x = @intCast(x), .y = @intCast(y) };
-            if (obstacles.contains(p)) {
-                std.debug.print("#", .{});
-            } else if (possibleExtras.contains(p)) {
-                std.debug.print("O", .{});
-            } else {
-                std.debug.print(".", .{});
-            }
-        }
-        std.debug.print("\n", .{});
-    }
+    // for (0..@intCast(guard.patrolArea.y)) |y| {
+    //     for (0..@intCast(guard.patrolArea.x)) |x| {
+    //         const p = Point{ .x = @intCast(x), .y = @intCast(y) };
+    //         if (obstacles.contains(p)) {
+    //             std.debug.print("#", .{});
+    //         } else if (possibleExtras.contains(p)) {
+    //             std.debug.print("O", .{});
+    //         } else std.debug.print(".", .{});
+    //     }
+    //     std.debug.print("\n", .{});
+    // }
 
     return possibleExtras.count();
 }
@@ -156,12 +156,16 @@ pub fn main() !void {
     var stdin = std.io.bufferedReader(std.io.getStdIn().reader());
 
     const guardPos, const guardDir, var obstacles, const bounds = try parse(allocator, stdin.reader());
-    defer obstacles.deinit();
+    defer obstacles.deinit(allocator);
+    const guard = Guard{ .position = guardPos, .facing = guardDir, .patrolArea = bounds };
 
-    std.debug.print("Number of cells visited : {:5}\n", .{try part1(allocator, guardPos, guardDir, obstacles, bounds)});
-    std.debug.print("Number of possible loops: {:5}\n", .{try part2(allocator, guardPos, guardDir, obstacles, bounds)});
+    var timer = try std.time.Timer.start();
+    std.debug.print("Number of cells visited : {:5}\n", .{try part1(allocator, guard, obstacles)});
+    std.debug.print("{}\n", .{std.fmt.fmtDuration(timer.lap())});
+    std.debug.print("Number of possible loops: {:5}\n", .{try part2(allocator, guard, obstacles)});
+    std.debug.print("{}\n", .{std.fmt.fmtDuration(timer.lap())});
 }
-// < 2007 < 2171
+
 // -------------------- Tests --------------------
 
 test {
@@ -179,12 +183,35 @@ test {
     ;
     var stream = std.io.fixedBufferStream(sample);
     const guardPos, const guardDir, var obstacles, const bounds = try parse(std.testing.allocator, stream.reader());
-    defer obstacles.deinit();
+    defer obstacles.deinit(std.testing.allocator);
 
     try std.testing.expectEqual(Point{ .x = 4, .y = 6 }, guardPos);
     try std.testing.expectEqual(Point{ .x = 10, .y = 10 }, bounds);
     try std.testing.expectEqual(.north, guardDir);
 
-    try std.testing.expectEqual(41, try part1(std.testing.allocator, guardPos, guardDir, obstacles, bounds));
-    try std.testing.expectEqual(6, try part2(std.testing.allocator, guardPos, guardDir, obstacles, bounds));
+    const guard = Guard{ .position = guardPos, .facing = guardDir, .patrolArea = bounds };
+
+    try std.testing.expectEqual(41, try part1(std.testing.allocator, guard, obstacles));
+    try std.testing.expectEqual(6, try part2(std.testing.allocator, guard, obstacles));
+}
+
+test "Bruh" {
+    const sample =
+        \\..#.............
+        \\..............#.
+        \\...#............
+        \\........#.......
+        \\................
+        \\.......#.....#..
+        \\................
+        \\..^.............
+    ;
+    var stream = std.io.fixedBufferStream(sample);
+    const guardPos, const guardDir, var obstacles, const bounds = try parse(std.testing.allocator, stream.reader());
+    defer obstacles.deinit(std.testing.allocator);
+
+    const guard = Guard{ .position = guardPos, .facing = guardDir, .patrolArea = bounds };
+
+    try std.testing.expectEqual(33, try part1(std.testing.allocator, guard, obstacles));
+    try std.testing.expectEqual(1, try part2(std.testing.allocator, guard, obstacles));
 }
