@@ -1,0 +1,11 @@
+.{
+    .name = "day07",
+    .version = "0.1.0",
+    .dependencies = .{
+        .utils = .{
+            .url = "../utils/",
+            .hash = "122059863bba3b73097c2905eacfa772e5c9ad7cd6616270b08dfdf41e3d81900420",
+        },
+    },
+    .paths = .{ "build.zig", "build.zig.zon", "solve.zig" },
+}
