@@ -6,5 +6,5 @@
 $ zig build --release run < input.txt
 Number of 2:1 antinodes :      xxx
 Number of antinodes     :     xxxx
-parse: 12.791us, part1: 6.875us, part2: 175.917us
+parse: 12.625us, part1: 6.833us, part2: 30.25us
 ```

@@ -1,11 +1,10 @@
 const std = @import("std");
 const utils = @import("utils");
 
-const Tuple = std.meta.Tuple;
 const Allocator = std.mem.Allocator;
-const PointList = std.ArrayListUnmanaged(Point);
+const PointList = std.BoundedArray(Point, 4);
 const PointSet = std.AutoHashMapUnmanaged(Point, void);
-const PointsPerFrequency = std.AutoHashMapUnmanaged(u8, PointList);
+const PointsPerFrequency = std.AutoArrayHashMapUnmanaged(u8, PointList);
 
 const Point = struct {
     x: i32,
@@ -24,7 +23,7 @@ const Point = struct {
     }
 };
 
-pub fn parse(allocator: Allocator, input: anytype) !Tuple(&.{ PointsPerFrequency, Point }) {
+pub fn parse(allocator: Allocator, input: anytype) !struct { PointsPerFrequency, Point } {
     var antennas: PointsPerFrequency = .empty;
     var bound_x: i32 = 0;
     var y: i32 = 0;
@@ -35,13 +34,8 @@ pub fn parse(allocator: Allocator, input: anytype) !Tuple(&.{ PointsPerFrequency
         bound_x = @intCast(line.len);
         for (line, 0..line.len) |c, x| {
             if (c != '.') {
-                if (antennas.getPtr(c)) |list| {
-                    list.appendAssumeCapacity(.{ .x = @intCast(x), .y = y });
-                } else {
-                    var list = try PointList.initCapacity(allocator, 16);
-                    list.appendAssumeCapacity(.{ .x = @intCast(x), .y = y });
-                    antennas.putAssumeCapacity(c, list);
-                }
+                var antenna = try antennas.getOrPutValue(allocator, c, try PointList.init(0));
+                antenna.value_ptr.appendAssumeCapacity(.{ .x = @intCast(x), .y = y });
             }
         }
         y += 1;
@@ -77,7 +71,7 @@ fn part1(allocator: Allocator, antennas: PointsPerFrequency, bounds: Point) u64 
 
     antinodes.ensureTotalCapacity(allocator, @intCast(@divTrunc(bounds.x * bounds.y, 10))) catch unreachable;
     while (frequencies.next()) |frequency| {
-        const positions = frequency.value_ptr.items;
+        const positions = frequency.value_ptr.slice();
         for (0..positions.len, positions) |i, p1| {
             for (positions[i + 1 ..]) |p2| {
                 const nodes = [_]Point{ p1.sub(p2.sub(p1)), p2.add(p2.sub(p1)) };
@@ -95,9 +89,9 @@ fn part2(allocator: Allocator, antennas: PointsPerFrequency, bounds: Point) u64 
     var frequencies = antennas.iterator();
     var antinodes: PointSet = .empty;
 
-    antinodes.ensureTotalCapacity(allocator, @intCast(@divTrunc(bounds.x * bounds.y, 4))) catch unreachable;
+    antinodes.ensureTotalCapacity(allocator, @intCast(@divTrunc(bounds.x * bounds.y, 2))) catch unreachable;
     while (frequencies.next()) |frequency| {
-        const positions = frequency.value_ptr.items;
+        const positions = frequency.value_ptr.slice();
         for (0..positions.len, positions) |i, p1| {
             for (positions[i + 1 ..]) |p2| {
                 var nodes = AntinodeIterator.init(p1, p2);
@@ -107,7 +101,6 @@ fn part2(allocator: Allocator, antennas: PointsPerFrequency, bounds: Point) u64 
             }
         }
     }
-
     return antinodes.count();
 }
 
