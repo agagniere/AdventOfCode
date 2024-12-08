@@ -128,12 +128,18 @@ pub fn main() !void {
     const allocator = gpa.allocator();
 
     var stdin = std.io.bufferedReader(std.io.getStdIn().reader());
+    var times: [3]u64 = undefined;
+    var timer = try std.time.Timer.start();
 
     var input = try parse(allocator, stdin.reader());
     defer input.deinit();
 
+    times[0] = timer.lap();
     std.debug.print("Number of 'XMAS' : {:5}\n", .{part1(input)});
+    times[1] = timer.lap();
     std.debug.print("Number of X 'MAS': {:5}\n", .{part2(input)});
+    times[2] = timer.lap();
+    std.debug.print("Parse: {}, part1: {}, part2: {}\n", .{ std.fmt.fmtDuration(times[0]), std.fmt.fmtDuration(times[1]), std.fmt.fmtDuration(times[2]) });
 }
 
 // -------------------- Tests --------------------

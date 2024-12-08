@@ -78,14 +78,19 @@ pub fn main() !void {
     var stdin = std.io.bufferedReader(std.io.getStdIn().reader());
     var lines = utils.lineIteratorSize(3100, stdin.reader());
     var total: [2]u64 = .{ 0, 0 };
+    var times: [2]u64 = .{ 0, 0 };
+    var timer = try std.time.Timer.start();
 
     while (lines.next()) |line| {
+        times[0] += timer.lap();
         const res = scan(line);
         total[0] += res[0];
         total[1] += res[1];
+        times[1] += timer.lap();
     }
-    std.debug.print("Program output : {}\n", .{total[0]});
-    std.debug.print("Withg branching: {}\n", .{total[1]});
+    std.debug.print("Program output: {:10}\n", .{total[0]});
+    std.debug.print("With branching: {:10}\n", .{total[1]});
+    std.debug.print("get next line: {}, part 1 & 2: {}\n", .{ std.fmt.fmtDuration(times[0]), std.fmt.fmtDuration(times[1]) });
 }
 
 test "part1" {
