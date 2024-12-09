@@ -79,9 +79,9 @@ fn part2(files: []File, freespaces: *FileList) u64 {
 
     while (right > 0) {
         for (0..freespaces.items.len, freespaces.items) |i, space| {
+            if (space.address >= files[right].address)
+                break;
             if (space.size >= files[right].size) {
-                if (space.address >= files[right].size)
-                    break;
                 files[right].address = space.address;
                 freespaces.items[i].size -= files[right].size;
                 if (freespaces.items[i].size == 0) {
@@ -111,9 +111,15 @@ pub fn main() !void {
     defer freespaces.deinit(allocator);
     times[0] = timer.lap();
 
+    var files2 = try files.clone(allocator);
+    defer files2.deinit(allocator);
+    var freespaces2 = try freespaces.clone(allocator);
+    defer freespaces2.deinit(allocator);
+
+    timer.reset();
     const one = part1(files.items, freespaces.items);
     times[1] = timer.lap();
-    const two = part2(files.items, &freespaces);
+    const two = part2(files2.items, &freespaces2);
     times[2] = timer.lap();
 
     std.debug.print("Compacted filesystem checksum   : {:12}\n", .{one});
