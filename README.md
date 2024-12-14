@@ -26,10 +26,10 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 | 19  |||||:star::star:||:star::star:|:star::star:|
 | 20  |||||:star:|:star::star:|:star::star:|:star:|
 | 21  |||||:star::star:|:star::star:|:star::star:|:star:|
-| 22  ||||||:star:|:star::star:|:star::star:|
+| 22  |||||:star::star:|:star:|:star::star:|:star::star:|
 | 23  |||||||:star::star:|:star:|
 | 24  ||||||:star::star:|:star::star:|:star:|
 | 25  |||||:star:|:star:|:star::star:||
-| Total | 10 | 14 | 4 | 10 | 42 | 44 | 50 | 44 | 22
+| Total | 10 | 14 | 4 | 10 | 44 | 44 | 50 | 44 | 22
 
-Total stars: 240
+Total stars: 242
