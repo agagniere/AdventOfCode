@@ -5,3 +5,6 @@ __pycache__
 *.txt
 .zig-cache
 zig-out
+*.lock
+*conan*.sh
+.DS_Store
