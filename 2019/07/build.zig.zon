@@ -1,0 +1,24 @@
+.{
+    .name = "day07",
+    .version = "0.2.0",
+    .dependencies = .{
+        .utils = .{
+            .url = "../../2024/utils",
+            .hash = "122059863bba3b73097c2905eacfa772e5c9ad7cd6616270b08dfdf41e3d81900420",
+        },
+        .zigcoro = .{
+            .url = "git+https://github.com/rsepassi/zigcoro#ca58a912c3c0957d6aab0405f4c78f68e1dababb",
+            .hash = "12204959321c5e16a70944b8cdf423f0fa2bdf7db1f72bacc89b8af85acc4c054d9c",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "first.zig",
+        "second.zig",
+        "sequential.zig",
+        "async.zig",
+        "parse.zig",
+        "instruction.zig",
+    },
+}
