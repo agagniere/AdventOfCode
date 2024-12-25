@@ -29,7 +29,7 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 | 22  |||||:star::star:|:star:|:star::star:|:star::star:|
 | 23  |||||||:star::star:|:star:|
 | 24  |||||:star::star:|:star::star:|:star::star:|:star:|
-| 25  |||||:star:|:star:|:star::star:||
-| Total | 10 | 14 | 4 | 12 | 46 | 44 | 50 | 44 | 30
+| 25  |||||:star:|:star:|:star::star:||:star:
+| Total | 10 | 14 | 4 | 12 | 46 | 44 | 50 | 44 | 31
 
-Total stars: 254
+Total stars: 255
