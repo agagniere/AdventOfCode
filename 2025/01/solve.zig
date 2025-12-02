@@ -3,7 +3,11 @@ const std = @import("std");
 const Allocator = std.mem.Allocator;
 const Reader = std.Io.Reader;
 
-pub fn day01(alloc: Allocator, input: *Reader) !struct { u32, u32 } {
+pub fn day01(alloc: Allocator, input: *Reader) struct { u64, u64 } {
+    return solve(alloc, input) catch unreachable;
+}
+
+fn solve(alloc: Allocator, input: *Reader) !struct { u64, u64 } {
     var timer: std.time.Timer = try .start();
     const moves = try parse(alloc, input);
     defer alloc.free(moves);
@@ -13,9 +17,9 @@ pub fn day01(alloc: Allocator, input: *Reader) !struct { u32, u32 } {
     const two = part2(moves);
     const t2 = timer.read();
 
-    std.log.info("parse: {D}, ~{D}/line", .{ t0, t0 / moves.len });
-    std.log.info("part1: {D}, ~{D}/line", .{ t1, t1 / moves.len });
-    std.log.info("part2: {D}, ~{D}/line", .{ t2, t2 / moves.len });
+    std.log.info("[01] parse: {D}, ~{D}/line", .{ t0, t0 / moves.len });
+    std.log.info("[01] part1: {D}, ~{D}/line", .{ t1, t1 / moves.len });
+    std.log.info("[01] part2: {D}, ~{D}/line", .{ t2, t2 / moves.len });
     return .{ one, two };
 }
 
@@ -62,11 +66,12 @@ fn part2(moves: []const i16) u32 {
 }
 
 fn parse(alloc: Allocator, input: *Reader) ![]i16 {
-    var result: std.ArrayList(i16) = try .initCapacity(alloc, 5_000);
+    var result: std.ArrayList(i16) = try .initCapacity(alloc, 512);
+    defer result.deinit(alloc);
 
     while (try input.takeDelimiter('\n')) |line| {
         const number = try std.fmt.parseInt(i16, line[1..], 10);
-        result.appendAssumeCapacity(switch (line[0]) {
+        try result.append(alloc, switch (line[0]) {
             'L' => -number,
             'R' => number,
             else => unreachable,
