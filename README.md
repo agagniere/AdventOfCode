@@ -32,4 +32,4 @@ My solutions for the [Advent of Code](https://adventofcode.com), a challenge sta
 | 25  |||||:star:|:star:|:star::star:||:star:|
 | Total | 10 | 14 | 4 | 12 | 46 | 44 | 50 | 44 | 35 | 4
 
-Total stars: 261
+Total stars: 263
