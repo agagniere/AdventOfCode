@@ -36,33 +36,23 @@ fn part1(moves: []const i16) u32 {
     return zeros;
 }
 
+// For some reason not applying mod to dial every iteration
+// resulst in a 3-4x perf boost !?
 fn part2(moves: []const i16) u32 {
     var dial: i16 = 50;
-    var zeros: u32 = 0;
+    var zeros: i16 = 0;
 
-    for (moves) |_move| {
-        var move: i16 = _move;
-        if (@abs(move) >= 100) {
-            zeros += @divTrunc(@abs(move), 100);
-            move = @rem(move, 100);
-            if (move == 0)
-                continue;
-        }
-        if (dial == 0 and move < 0)
-            move += 100;
+    for (moves) |move| {
+        const dist = if (move < 0 and @mod(dial, 100) != 0)
+            100 - @mod(dial, 100) - move
+        else if (move < 0)
+            -move
+        else
+            @mod(dial, 100) + move;
+        zeros += @divTrunc(dist, 100);
         dial += move;
-        if (dial < 0) {
-            zeros += 1;
-            dial += 100;
-        }
-        if (dial == 0)
-            zeros += 1;
-        if (dial >= 100) {
-            zeros += 1;
-            dial -= 100;
-        }
     }
-    return zeros;
+    return @intCast(zeros);
 }
 
 fn parse(alloc: Allocator, input: *Reader) ![]i16 {
