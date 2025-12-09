@@ -18,23 +18,23 @@ fn solve(alloc: Allocator, input: *Reader) !struct { u64, u64 } {
     defer alloc.free(jboxes);
     const tp = timer.lap();
 
-    const jboxes2 = try alloc.dupe(graph.Node, jboxes);
-    defer alloc.free(jboxes2);
     var links = try graph.build_edges(alloc, jboxes);
     defer links.deinit();
-    var links2 = try graph.build_edges(alloc, jboxes2);
-    defer links2.deinit();
+    var circuits: std.ArrayList(std.ArrayList(*graph.Node)) = try .initCapacity(alloc, jboxes.len >> 2);
+    defer circuits.deinit(alloc);
+    defer for (circuits.items) |*circuit| circuit.deinit(alloc);
     const te = timer.lap();
 
-    const p1 = try part1(alloc, &links);
+    const p1 = try part1(alloc, &links, &circuits);
+    const plugged = links.capacity() - links.count();
     const t1 = timer.lap();
 
-    const p2 = try part2(alloc, &links2, jboxes.len);
+    const p2 = try part2(alloc, &links, jboxes.len, &circuits);
     const t2 = timer.lap();
 
     std.log.info("[08] parse: {D}, ~{D}/line", .{ tp, tp / jboxes.len });
     std.log.info("[08] prepare: {D}, ~{D}/link", .{ te, te / links.capacity() });
-    std.log.info("[08] part1: {D}", .{t1});
-    std.log.info("[08] part2: {D}", .{t2});
+    std.log.info("[08] part1: {D}, ~{D}/conn", .{ t1, t1 / plugged });
+    std.log.info("[08] part2: {D}, ~{D}/conn", .{ t2, t2 / (links.capacity() - links.count() - plugged) });
     return .{ p1, p2 };
 }

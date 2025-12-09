@@ -5,12 +5,8 @@ const Allocator = std.mem.Allocator;
 const LinksByClosest = graph.LinksByClosest;
 const Node = graph.Node;
 
-pub fn part1(alloc: Allocator, links: *LinksByClosest, groups: *std.ArrayList(std.ArrayList(*Node))) !u64 {
-    const limit: usize = if (links.count() < 1000) 10 else 1000;
-
-    for (0..limit) |_| {
-        const link = links.remove();
-
+pub fn part2(alloc: Allocator, links: *LinksByClosest, boxCount: usize, groups: *std.ArrayList(std.ArrayList(*Node))) !u64 {
+    while (links.removeOrNull()) |link| {
         if (link.a.group) |cA| {
             if (link.b.group) |cB| {
                 if (cA == cB)
@@ -33,14 +29,8 @@ pub fn part1(alloc: Allocator, links: *LinksByClosest, groups: *std.ArrayList(st
             try groups.append(alloc, .empty);
             try groups.items[link.a.group.?].appendSlice(alloc, &.{ link.a, link.b });
         }
+        if (groups.items[link.a.group.?].items.len == boxCount)
+            return @intCast(link.a.pos.value[0] * link.b.pos.value[0]);
     }
-    var groupSize: std.ArrayList(usize) = try .initCapacity(alloc, groups.items.len);
-    defer groupSize.deinit(alloc);
-    for (groups.items) |group| {
-        if (group.items.len > 0) {
-            groupSize.appendAssumeCapacity(group.items.len);
-        }
-    }
-    std.sort.block(usize, groupSize.items, {}, std.sort.desc(usize));
-    return groupSize.items[0] * groupSize.items[1] * groupSize.items[2];
+    unreachable;
 }
